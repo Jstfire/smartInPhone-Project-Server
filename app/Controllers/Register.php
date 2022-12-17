@@ -16,7 +16,7 @@ class Register extends ResourceController
     use ResponseTrait;
     public function index()
     {
-        helper(['form']);
+        
         $rules = [
             'email' => 'required|valid_email|is_unique[users.email]',
             'name' => 'required',
@@ -25,17 +25,22 @@ class Register extends ResourceController
             'confpassword' => 'matches[password]'
         ];
         if(!$this->validate($rules)) return $this->fail($this->validator->getErrors());
-        if (!empty($this->request->getVar('avatar'))) {
+        if (!empty($this->request->getFile('avatar'))) {
+            $fileAvatar = $this->request->getFile('avatar');
+            $fileName = $this->request->getVar('username').".png";
+            $fileAvatar->move('avatar', $fileName);
             $data = [
                 'email'     => $this->request->getVar('email'),
-                'avatar'     => $this->request->getVar('avatar'),
+                'avatar'    => $fileName,
                 'name'      => $this->request->getVar('name'),
                 'username'  => $this->request->getVar('username'),
                 'password'  => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT) 
             ];
         } else {
+            $fileName = "avatar_default.png";
             $data = [
                 'email'     => $this->request->getVar('email'),
+                'avatar'    => $fileName,
                 'name'      => $this->request->getVar('name'),
                 'username'  => $this->request->getVar('username'),
                 'password'  => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT) 

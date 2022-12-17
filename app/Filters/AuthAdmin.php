@@ -38,7 +38,6 @@ class AuthAdmin implements FilterInterface
  
         try {
             JWT::decode($token, new key($key, 'HS512'));
-            JWT::decode($token, new key($key, 'HS512'));
             try {
                 $decoded = JWT::decode($token, new key($key, 'HS512'));
                 $response = [

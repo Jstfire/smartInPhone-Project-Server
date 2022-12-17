@@ -56,34 +56,66 @@ class Handphone extends ResourceController
     public function create()
     {
         $modelHP = new HandPhoneModel();
-        $data = [
-            'phone_photo'  => $this->request->getVar('phone_photo'),
-            'name' => $this->request->getVar('name'),
-            'network'  => $this->request->getVar('network'),
-            'launch'  => $this->request->getVar('launch'),
-            'body'  => $this->request->getVar('body'),
-            'display'  => $this->request->getVar('display'),
-            'platform'  => $this->request->getVar('platform'),
-            'memory'  => $this->request->getVar('memory'),
-            'maincam'  => $this->request->getVar('maincam'),
-            'selfcam'  => $this->request->getVar('selfcam'),
-            'sound'  => $this->request->getVar('sound'),
-            'comms'  => $this->request->getVar('comms'),
-            'features'  => $this->request->getVar('features'),
-            'battery'  => $this->request->getVar('battery'),
-            'tests'  => $this->request->getVar('tests'),
-        ];
-        $response = [
-            'status'   => 201,
-            'error'    => null,
-            'messages' => [
-                'success' => 'Data HP berhasil ditambahkan.'
-            ]
-        ];
+        if (!empty($this->request->getFile('phone_photo'))) {
+            $filePP = $this->request->getFile('phone_photo');
+            $fileName = $this->request->getVar('name').".png";
+            $filePP->move('phone_photo', $fileName);
+            $data = [
+                'phone_photo'  => $fileName,
+                'name' => $this->request->getVar('name'),
+                'network'  => $this->request->getVar('network'),
+                'launch'  => $this->request->getVar('launch'),
+                'body'  => $this->request->getVar('body'),
+                'display'  => $this->request->getVar('display'),
+                'platform'  => $this->request->getVar('platform'),
+                'memory'  => $this->request->getVar('memory'),
+                'maincam'  => $this->request->getVar('maincam'),
+                'selfcam'  => $this->request->getVar('selfcam'),
+                'sound'  => $this->request->getVar('sound'),
+                'comms'  => $this->request->getVar('comms'),
+                'features'  => $this->request->getVar('features'),
+                'battery'  => $this->request->getVar('battery'),
+                'tests'  => $this->request->getVar('tests'),
+            ];
+        } else {
+            $fileName = "phone_default.png";
+            $data = [
+                'phone_photo'  => $fileName,
+                'name' => $this->request->getVar('name'),
+                'network'  => $this->request->getVar('network'),
+                'launch'  => $this->request->getVar('launch'),
+                'body'  => $this->request->getVar('body'),
+                'display'  => $this->request->getVar('display'),
+                'platform'  => $this->request->getVar('platform'),
+                'memory'  => $this->request->getVar('memory'),
+                'maincam'  => $this->request->getVar('maincam'),
+                'selfcam'  => $this->request->getVar('selfcam'),
+                'sound'  => $this->request->getVar('sound'),
+                'comms'  => $this->request->getVar('comms'),
+                'features'  => $this->request->getVar('features'),
+                'battery'  => $this->request->getVar('battery'),
+                'tests'  => $this->request->getVar('tests'),
+            ];
+        }
         $registered = $modelHP->insert($data);
         $this->respondCreated($registered);
         return $this->respondCreated($registered);
         // return $this->respondCreated($response);
+    }
+
+    public function showPhonePhoto($filename)
+    {
+        $filepath = "/phone_photo/".$filename;
+        if(file_exists($filepath)){
+            $mime = mime_content_type($filepath); //<-- detect file type
+            header('Content-Length: '.filesize($filepath)); //<-- sends filesize header
+            header("Content-Type: $mime"); //<-- send mime-type header
+            header('Content-Disposition: inline; filename="'.$filepath.'";'); //<-- sends filename header
+            readfile($filepath); //<--reads and outputs the file onto the output buffer
+            exit(); // or die()
+        } else {
+            return $this->failNotFound('Foto HP tidak ditemukan.');
+        }
     }
 
     /**
@@ -104,7 +136,48 @@ class Handphone extends ResourceController
     public function update($id = null)
     {
         $model = new HandphoneModel();
-        $model->update($id, $this->request->getRawInput());
+        if (!empty($this->request->getFile('phone_photo'))) {
+            $filePP = $this->request->getFile('phone_photo');
+            $fileName = $this->request->getVar('name').".png";
+            $filePP->move('phone_photo', $fileName);
+            $data = [
+                'phone_photo'  => $fileName,
+                'name' => $this->request->getVar('name'),
+                'network'  => $this->request->getVar('network'),
+                'launch'  => $this->request->getVar('launch'),
+                'body'  => $this->request->getVar('body'),
+                'display'  => $this->request->getVar('display'),
+                'platform'  => $this->request->getVar('platform'),
+                'memory'  => $this->request->getVar('memory'),
+                'maincam'  => $this->request->getVar('maincam'),
+                'selfcam'  => $this->request->getVar('selfcam'),
+                'sound'  => $this->request->getVar('sound'),
+                'comms'  => $this->request->getVar('comms'),
+                'features'  => $this->request->getVar('features'),
+                'battery'  => $this->request->getVar('battery'),
+                'tests'  => $this->request->getVar('tests'),
+            ];
+        } else {
+            $fileName = "phone_default.png";
+            $data = [
+                'phone_photo'  => $fileName,
+                'name' => $this->request->getVar('name'),
+                'network'  => $this->request->getVar('network'),
+                'launch'  => $this->request->getVar('launch'),
+                'body'  => $this->request->getVar('body'),
+                'display'  => $this->request->getVar('display'),
+                'platform'  => $this->request->getVar('platform'),
+                'memory'  => $this->request->getVar('memory'),
+                'maincam'  => $this->request->getVar('maincam'),
+                'selfcam'  => $this->request->getVar('selfcam'),
+                'sound'  => $this->request->getVar('sound'),
+                'comms'  => $this->request->getVar('comms'),
+                'features'  => $this->request->getVar('features'),
+                'battery'  => $this->request->getVar('battery'),
+                'tests'  => $this->request->getVar('tests'),
+            ];
+        }
+        $model->update($id, $data);
         $response = [
             'status'   => 200,
             'error'    => null,
@@ -123,7 +196,8 @@ class Handphone extends ResourceController
     public function delete($id = null)
     {
         $modelHP = new HandphoneModel();
-        $data = $modelHP->where('id', $id)->delete($id);
+        $data = $modelHP->where('id', $id)->first();
+        // var_dump($data);
         if ($data) {
             $modelHP->delete($id);
             $response = [
@@ -133,6 +207,8 @@ class Handphone extends ResourceController
                     'success' => 'Data produk berhasil dihapus.'
                 ]
             ];
+            $filePP = FCPATH."phone_photo/".$data['phone_photo'];
+            unlink($filePP);
             return $this->respondDeleted($response);
         } else {
             return $this->failNotFound('Data tidak ditemukan.');

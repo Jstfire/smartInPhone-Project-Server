@@ -42,11 +42,25 @@ class Login extends ResourceController
             "email" => $user['email'],
             "name" => $user['name'],
             "username" => $user['username'],
-            "avatar" => base64_encode($user['avatar']),
+            "avatar" => $user['avatar'],
             "role" => $user['role']
         );
         $token = JWT::encode($payload, $key, 'HS512');
         return $this->respond($token);
+    }
+
+    public function showAvatar($filename)
+    {
+        if(file_exists($filename)){
+            $mime = mime_content_type($filename); //<-- detect file type
+            header('Content-Length: '.filesize($filename)); //<-- sends filesize header
+            header("Content-Type: $mime"); //<-- send mime-type header
+            header('Content-Disposition: inline; filename="'.$filename.'";'); //<-- sends filename header
+            readfile($filename); //<--reads and outputs the file onto the output buffer
+            exit(); // or die()
+        } else {
+            return $this->failNotFound('Avatar tidak ditemukan.');
+        }
     }
 
     /**

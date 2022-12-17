@@ -39,13 +39,16 @@ $routes->set404Override();
 $routes->get('/', 'Home::index', ['filter' => 'auth']);
 $routes->post('register', 'Register::index');
 $routes->post('login', 'Login::index');
-$routes->put('update/(.*)', 'Register::update');
+$routes->put('update/(:segment)', 'Register::update/$1');
 $routes->get('me', 'Me::index');
+$routes->get('avatar/(:segment)', 'login::showAvatar/$1');
 $routes->get('handphone', 'Handphone::index');
-$routes->get('handphone/(.*)', 'Handphone::show/$1');
-$routes->post('handphone', 'Handphone::create', ['filter' => 'authadmin']);
-$routes->put('handphone/(.*)', 'Handphone::update/$1', ['filter' => 'auth']);
-$routes->delete('handphone/(.*)', 'Handphone::delete/$1', ['filter' => 'authadmin']);
+$routes->get('handphone/(:segment)', 'Handphone::show/$1');
+$routes->get('handphone/photo/(:segment)', 'Handphone::showPhonePhoto/$1');
+$routes->get('phone_photo/(:segment)', 'Handphone::showPhonePhoto/$1');
+$routes->post('handphone/create', 'Handphone::create', ['filter' => 'authadmin']);
+$routes->post('handphone/update/(:segment)', 'Handphone::update/$1', ['filter' => 'auth']);
+$routes->delete('handphone/delete/(:segment)', 'Handphone::delete/$1', ['filter' => 'authadmin']);
 // $routes->resource('handphone');
 
 /*
