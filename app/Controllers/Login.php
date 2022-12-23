@@ -46,7 +46,11 @@ class Login extends ResourceController
             "role" => $user['role']
         );
         $token = JWT::encode($payload, $key, 'HS512');
-        return $this->respond($token);
+        $response = [
+            'status'   => 200,
+            'token' => $token
+        ];
+        return $this->respond($response);
     }
 
     public function showAvatar($filename)

@@ -114,68 +114,42 @@ class Register extends ResourceController
             'email' => 'required|valid_email',
             'name' => 'required',
             'username' => 'required',
-        ];
-        if(!$this->validate($rules)) return $this->fail($this->validator->getErrors());
-        $data = [
-            'email'     => $this->request->getVar('email'),
-            'name'      => $this->request->getVar('name'),
-            'username'  => $this->request->getVar('username'),
-        ];
-        $model = new UserModel();
-        $model->update($id, $data);
-        // $this->respondCreated($registered);
-        // return $this->respondCreated($registered);
-        $response = [
-            'status'   => 200,
-            'info' => 'Berhasil Update User!'
-        ];
-        return $this->respond($response);
-    }
-
-    public function updatePassword($id = null)
-    {
-        $model = new UserModel();
-        $rules = [
             'password' => 'required|min_length[6]',
             'confpassword' => 'matches[password]'
         ];
         if(!$this->validate($rules)) return $this->fail($this->validator->getErrors());
-        $data = [
-            'password'  => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT) 
-        ];
-        $model = new UserModel();
-        $model->update($id, $data);
-        // $this->respondCreated($registered);
-        // return $this->respondCreated($registered);
-        $response = [
-            'status'   => 200,
-            'info' => 'Berhasil Update Password!'
-        ];
-        return $this->respond($response);
-    }
-
-    public function updateAvatar($id = null)
-    {
-        $model = new UserModel();
-        $data = $model->where('id', $id)->first();
-        if ($data['avatar'] != 'avatar_default.png') {
-            $filePP = FCPATH."avatar/".$data['avatar'];
-            unlink($filePP);
+        if (!empty($this->request->getFile('avatar'))) {
+            $fileAvatar = $this->request->getFile('avatar');
+            $fileName = $this->request->getVar('username').".png";
+            $fileAvatar->move('avatar', $fileName);
+            $data = [
+                'email'     => $this->request->getVar('email'),
+                'avatar'    => $fileName,
+                'name'      => $this->request->getVar('name'),
+                'username'  => $this->request->getVar('username'),
+                'password'  => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT) 
+            ];
+        } else {
+            $fileName = "avatar_default.png";
+            $data = [
+                'email'     => $this->request->getVar('email'),
+                'avatar'    => $fileName,
+                'name'      => $this->request->getVar('name'),
+                'username'  => $this->request->getVar('username'),
+                'password'  => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT) 
+            ];
         }
-        $fileAvatar = $this->request->getFile('avatar');
-        $fileName = $data['username'].".png";
-        $fileAvatar->move('avatar', $fileName);
-        $data = [
-            'avatar'    => $fileName,
-        ];
-
+        
+        
         $model = new UserModel();
         $model->update($id, $data);
         // $this->respondCreated($registered);
         // return $this->respondCreated($registered);
         $response = [
             'status'   => 200,
-            'info' => 'Berhasil Update Avatar!'
+            'info' => [
+                'Berhasil Register User!'
+            ]
         ];
         return $this->respond($response);
     }

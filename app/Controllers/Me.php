@@ -25,6 +25,7 @@ class Me extends ResourceController
             $decoded = JWT::decode($token, new key($key, 'HS512'));
 
             $response = [
+                'status' => '200',
                 'id' => $decoded->uid,
                 'email' => $decoded->email,
                 'name' => $decoded->name,

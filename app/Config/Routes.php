@@ -36,17 +36,20 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 // $routes->get('/', 'Home::index');
-$routes->get('/', 'Home::index', ['filter' => 'auth']);
+// $routes->get('/', 'Home::index', ['filter' => 'auth']);
+$routes->get('/', 'Home::index');
 $routes->post('register', 'Register::index');
 $routes->post('login', 'Login::index');
-$routes->put('update/(:segment)', 'Register::update/$1');
+$routes->post('user/update/(:segment)', 'Register::update/$1', ['filter' => 'auth']);
+$routes->post('user/updatePassword/(:segment)', 'Register::updatePassword/$1', ['filter' => 'auth']);
+$routes->post('user/updateAvatar/(:segment)', 'Register::updateAvatar/$1', ['filter' => 'auth']);
 $routes->get('me', 'Me::index');
 $routes->get('avatar/(:segment)', 'login::showAvatar/$1');
 $routes->get('handphone', 'Handphone::index');
 $routes->get('handphone/(:segment)', 'Handphone::show/$1');
 $routes->get('handphone/photo/(:segment)', 'Handphone::showPhonePhoto/$1');
 $routes->get('phone_photo/(:segment)', 'Handphone::showPhonePhoto/$1');
-$routes->post('handphone/create', 'Handphone::create', ['filter' => 'authadmin']);
+$routes->post('createHP', 'Handphone::create', ['filter' => 'authadmin']);
 $routes->post('handphone/update/(:segment)', 'Handphone::update/$1', ['filter' => 'auth']);
 $routes->delete('handphone/delete/(:segment)', 'Handphone::delete/$1', ['filter' => 'authadmin']);
 // $routes->resource('handphone');
